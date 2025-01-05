@@ -1,4 +1,4 @@
-require_relative '../lib/openai-client.rb'
+require_relative '../lib/simple-openai-client.rb'
 require_relative './config.rb'
 
 previous_messages = [
