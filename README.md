@@ -1,10 +1,10 @@
 
 # OpenAI Client for Ruby
 
-![Gem Version](https://badge.fury.io/rb/openai-client.svg) ![License](https://img.shields.io/badge/license-MIT-brightgreen) ![Ruby](https://img.shields.io/badge/Ruby-%3E%3D%202.5-red)
+![Gem Version](https://badge.fury.io/rb/simple-openai-client.svg) ![License](https://img.shields.io/badge/license-MIT-brightgreen) ![Ruby](https://img.shields.io/badge/Ruby-%3E%3D%202.5-red)
 
 ## 1. Abstract
-The `openai-client` is a lightweight Ruby library designed to simplify interactions with the OpenAI API, enabling developers to build agents that can handle complex conversations, utilize function calling, and maintain context through message history. With minimal setup, you can start integrating AI-powered functionalities into your Ruby applications.
+The `simple-openai-client` is a lightweight Ruby library designed to simplify interactions with the OpenAI API, enabling developers to build agents that can handle complex conversations, utilize function calling, and maintain context through message history. With minimal setup, you can start integrating AI-powered functionalities into your Ruby applications.
 
 Key features include:
 - Easy integration with OpenAI's chat completions endpoint.
@@ -19,13 +19,13 @@ Key features include:
 To install the gem, add this line to your application's Gemfile:
 
 ```ruby
-gem 'openai-client', '~> 1.0.1'
+gem 'simple-openai-client', '~> 1.0.1'
 ```
 
 Or install it manually from the command line:
 
 ```bash
-$ gem install openai-client
+$ gem install simple-openai-client
 ```
 
 Ensure you have the following dependencies installed:
@@ -55,10 +55,10 @@ $ cd my_openai_project
 $ bundle init
 ```
 
-Add `openai-client` to your Gemfile:
+Add `simple-openai-client` to your Gemfile:
 
 ```ruby
-gem 'openai-client', '~> 1.0.1'
+gem 'simple-openai-client', '~> 1.0.1'
 ```
 
 Run:
@@ -83,7 +83,7 @@ MODEL = 'gpt-4'
 Create a file called `ask_the_ai.rb`:
 
 ```ruby
-require_relative '../lib/openai-client.rb'
+require 'simple-openai-client'
 require_relative './config.rb'
 
 # Previous messages to maintain context

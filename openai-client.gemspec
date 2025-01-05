@@ -1,16 +1,16 @@
 Gem::Specification.new do |s|
-    s.name        = 'openai-client'
-    s.version     = '1.0.1'
+    s.name        = 'simple-openai-client'
+    s.version     = '1.0.2'
     s.date        = '2025-01-05'
     s.summary     = "Very simple Ruby library for operating OpenAI API for building Agents."
     s.description = "Very simple Ruby library for operating OpenAI API for building Agents."
     s.authors     = ["Leandro Daniel Sardi"]
     s.email       = 'leandro@massprospecting.com'
     s.files       = [
-      'lib/openai-client.rb',
-      'openai-client.gemspec'
+      'lib/simple-openai-client.rb',
+      'simple-openai-client.gemspec'
     ]
-    s.homepage    = 'https://github.com/leandrosardi/openai-client'
+    s.homepage    = 'https://github.com/leandrosardi/simple-openai-client'
     s.license     = 'MIT'
     s.add_runtime_dependency 'uri', '~> 0.11.2', '>= 0.11.2'
     s.add_runtime_dependency 'net-http', '~> 0.2.0', '>= 0.2.0'
