@@ -1,0 +1,24 @@
+=> {[31m[1;31m"[0m[31mid[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mchatcmpl-AmPkN75e8jIA1QErRHDKvBpX0OBmr[1;31m"[0m[31m[0m,
+ [31m[1;31m"[0m[31mobject[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mchat.completion[1;31m"[0m[31m[0m,
+ [31m[1;31m"[0m[31mcreated[1;31m"[0m[31m[0m=>[1;34m1736102079[0m,
+ [31m[1;31m"[0m[31mmodel[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mgpt-4o-2024-08-06[1;31m"[0m[31m[0m,
+ [31m[1;31m"[0m[31mchoices[1;31m"[0m[31m[0m=>
+  [{[31m[1;31m"[0m[31mindex[1;31m"[0m[31m[0m=>[1;34m0[0m,
+    [31m[1;31m"[0m[31mmessage[1;31m"[0m[31m[0m=>
+     {[31m[1;31m"[0m[31mrole[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31massistant[1;31m"[0m[31m[0m,
+      [31m[1;31m"[0m[31mcontent[1;31m"[0m[31m[0m=>
+       [31m[1;31m"[0m[31mI'm sorry, but I don't have access to your specific configuration or any personal data. To find out how many tags you have, you might need to review your configuration settings directly or consult any documentation or support resources related to the software or system you're using.[1;31m"[0m[31m[0m,
+      [31m[1;31m"[0m[31mrefusal[1;31m"[0m[31m[0m=>[1;36mnil[0m},
+    [31m[1;31m"[0m[31mlogprobs[1;31m"[0m[31m[0m=>[1;36mnil[0m,
+    [31m[1;31m"[0m[31mfinish_reason[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mstop[1;31m"[0m[31m[0m}],
+ [31m[1;31m"[0m[31musage[1;31m"[0m[31m[0m=>
+  {[31m[1;31m"[0m[31mprompt_tokens[1;31m"[0m[31m[0m=>[1;34m34[0m,
+   [31m[1;31m"[0m[31mcompletion_tokens[1;31m"[0m[31m[0m=>[1;34m52[0m,
+   [31m[1;31m"[0m[31mtotal_tokens[1;31m"[0m[31m[0m=>[1;34m86[0m,
+   [31m[1;31m"[0m[31mprompt_tokens_details[1;31m"[0m[31m[0m=>{[31m[1;31m"[0m[31mcached_tokens[1;31m"[0m[31m[0m=>[1;34m0[0m, [31m[1;31m"[0m[31maudio_tokens[1;31m"[0m[31m[0m=>[1;34m0[0m},
+   [31m[1;31m"[0m[31mcompletion_tokens_details[1;31m"[0m[31m[0m=>
+    {[31m[1;31m"[0m[31mreasoning_tokens[1;31m"[0m[31m[0m=>[1;34m0[0m,
+     [31m[1;31m"[0m[31maudio_tokens[1;31m"[0m[31m[0m=>[1;34m0[0m,
+     [31m[1;31m"[0m[31maccepted_prediction_tokens[1;31m"[0m[31m[0m=>[1;34m0[0m,
+     [31m[1;31m"[0m[31mrejected_prediction_tokens[1;31m"[0m[31m[0m=>[1;34m0[0m}},
+ [31m[1;31m"[0m[31msystem_fingerprint[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mfp_d28bcae782[1;31m"[0m[31m[0m}
