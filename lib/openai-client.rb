@@ -85,7 +85,7 @@ class OpenAIClient
 
         if response.is_a?(Net::HTTPSuccess)
             response_json = JSON.parse(response.body)
-#binding.pry
+
             # Check if the assistant decided to call a function
             function_call = response_json.dig("choices", 0, "message", "function_call")
 
@@ -98,7 +98,7 @@ class OpenAIClient
             else
                 function_call_name = function_call["name"]
                 function_call_args = JSON.parse(function_call["arguments"]) rescue {}
-#binding.pry
+                
                 # Handle the function call
                 result = self.callbacks[function_call_name.to_sym].call(function_call_args);
 
