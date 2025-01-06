@@ -121,7 +121,7 @@ class OpenAIClient
 
                 follow_up_request = Net::HTTP::Post.new(follow_up_uri.path, {
                     "Content-Type" => "application/json",
-                    "Authorization" => "Bearer #{OPENAI_API_KEY}",
+                    "Authorization" => "Bearer #{self.api_key}",
                     "OpenAI-Beta" => "assistants=#{version}"
                 })
                 follow_up_request.body = JSON.dump(follow_up_request_body)
