@@ -19,7 +19,7 @@ Key features include:
 To install the gem, add this line to your application's Gemfile:
 
 ```ruby
-gem 'simple-openai-client', '~> 1.0.2'
+gem 'simple-openai-client', '~> 1.0.3'
 ```
 
 Or install it manually from the command line:
@@ -58,7 +58,7 @@ $ bundle init
 Add `simple-openai-client` to your Gemfile:
 
 ```ruby
-gem 'simple-openai-client', '~> 1.0.2'
+gem 'simple-openai-client', '~> 1.0.3'
 ```
 
 Run:

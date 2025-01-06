@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
     s.name        = 'simple-openai-client'
-    s.version     = '1.0.2'
+    s.version     = '1.0.3'
     s.date        = '2025-01-05'
     s.summary     = "Very simple Ruby library for operating OpenAI API for building Agents."
     s.description = "Very simple Ruby library for operating OpenAI API for building Agents."
