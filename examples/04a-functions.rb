@@ -1,3 +1,7 @@
+# 
+# Integration with MassProspecting
+#
+
 require_relative '../lib/simple-openai-client.rb'
 require_relative './config.rb'
 require 'mass-client'

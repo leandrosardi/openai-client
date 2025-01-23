@@ -5,6 +5,7 @@
 require 'net/http'
 require 'uri'
 require 'json'
+require 'colorize'
 
 class OpenAIClient
     attr_accessor :api_key, :model, :messages, :functions, :callbacks, :version
