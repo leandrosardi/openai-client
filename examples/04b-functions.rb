@@ -102,11 +102,11 @@ puts cmd
   },
 =end
   read_file_content: lambda { |function_call_args|
-puts
-puts "search_files_in_local_filesystem: #{function_call_args.to_s}"
+#puts
+#puts "search_files_in_local_filesystem: #{function_call_args.to_s}"
     file_path = function_call_args["file_path"]
     begin
-binding.pry
+#binding.pry
       content = File.read(file_path)
       { "file_content" => content }
     rescue => e
