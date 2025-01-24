@@ -7,7 +7,7 @@ require_relative './config.rb'
 require 'adspower-client'
 
 previous_messages = [
-  { "role" => "user", "content" => "Your name is Thelma." },
+  { "role" => "user", "content" => "Your name is Local Copilot." },
   #{ "role" => "user", "content" => "Create a new tag named 'Urgent' with a red color code for account 123." },
   #{ "role" => "user", "content" => "What is your name?" }
   #{ "role" => "user", "content" => "How many tags do I have in my configuration?" }
