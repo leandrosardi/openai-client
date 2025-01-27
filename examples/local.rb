@@ -7,7 +7,11 @@ require_relative './config.rb'
 require 'adspower-client'
 
 previous_messages = [
-  { "role" => "user", "content" => "Your name is Local Copilot." },
+  { "role" => "user", "content" => "Your name is Alfie.
+
+When I tell you that read the content of a file, just do it and don't reply with a summary of what you have learned.
+
+When I request you to create or modify a text file, just povide a `git diff` in your response." },
   #{ "role" => "user", "content" => "Create a new tag named 'Urgent' with a red color code for account 123." },
   #{ "role" => "user", "content" => "What is your name?" }
   #{ "role" => "user", "content" => "How many tags do I have in my configuration?" }
