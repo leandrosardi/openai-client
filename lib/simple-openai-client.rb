@@ -70,7 +70,11 @@ class OpenAIClient
             # If you want the model to call a function explicitly, you can add: "function_call" => "auto"
         }
 
-        request_body["functions"] = self.functions if self.functions.size > 0
+        if self.functions.size > 0
+            request_body["functions"] = self.functions 
+            # Important: enable function-calling
+            request_body["function_call"] = "auto"
+        end
 
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
