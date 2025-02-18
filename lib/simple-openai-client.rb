@@ -53,7 +53,7 @@ class OpenAIClient
 
     # Ask something to GPT.
     # Return the response.
-    def ask(s, context: [])
+    def ask(s, context: [], function_to_call: nil)
         # Use v1 chat completions endpoint (with functions support)
         uri = URI("https://api.openai.com/v1/chat/completions")
 
@@ -73,7 +73,7 @@ class OpenAIClient
         if self.functions.size > 0
             request_body["functions"] = self.functions 
             # Important: enable function-calling
-            request_body["function_call"] = "auto"
+            request_body["function_call"] = {"name" => function_to_call} if function_to_call
         end
 
         http = Net::HTTP.new(uri.host, uri.port)
