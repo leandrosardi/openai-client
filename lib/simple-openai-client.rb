@@ -51,102 +51,88 @@ class OpenAIClient
       #[]
     end # models
 
+
     # Ask something to GPT.
-    # Return the response.
-    def ask(s, context: [], function_to_call: nil)
-        # Use v1 chat completions endpoint (with functions support)
+    #
+    # @param s               [String]   The user prompt
+    # @param context         [Array<Hash>]  Additional messages to prepend
+    # @param function_to_call[String,nil]  Name of the function you want GPT to call
+    # @param function_args  [Hash,nil]     Arguments to pass into the function call
+    #
+    # @return [String] the assistant’s reply (or function result)
+    def ask(s, context: [], function_to_call: nil, function_args: nil)
         uri = URI("https://api.openai.com/v1/chat/completions")
 
-        # add contenxt to the history of messages
+        # build message history
         self.messages += context
-
-        # add new question asked by the user to the history of messages
         self.messages << { "role" => "user", "content" => s }
 
+        # base request
         request_body = {
-            "model" => self.model, # A known model that supports function calling; update as needed
-            "messages" => self.messages
-            # To let the model decide if and when to call a function, omit "function_call"
-            # If you want the model to call a function explicitly, you can add: "function_call" => "auto"
+        "model"    => self.model,
+        "messages" => self.messages
         }
 
-        if self.functions.size > 0
-            request_body["functions"] = self.functions 
-            # Important: enable function-calling
-            request_body["function_call"] = {"name" => function_to_call} if function_to_call
+        if functions.any?
+        request_body["functions"] = functions
+
+        # if you want GPT to call a specific function…
+        if function_to_call
+            # if you also passed a hash of arguments, serialize them
+            if function_args
+            request_body["function_call"] = {
+                "name"      => function_to_call,
+                "arguments" => JSON.dump(function_args)
+            }
+            else
+            request_body["function_call"] = { "name" => function_to_call }
+            end
+        end
         end
 
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
-
-        request = Net::HTTP::Post.new(uri.path, {
-            "Content-Type" => "application/json",
-            "Authorization" => "Bearer #{self.api_key}",
-            "OpenAI-Beta" => "assistants=#{version}"
+        req = Net::HTTP::Post.new(uri.path, {
+        "Content-Type"  => "application/json",
+        "Authorization" => "Bearer #{api_key}",
+        "OpenAI-Beta"   => "assistants=#{version}"
         })
-        request.body = JSON.dump(request_body)
+        req.body = JSON.dump(request_body)
 
-        response = http.request(request)
+        response = http.request(req)
+        raise "Error: #{response.code} #{response.message} #{response.body}" unless response.is_a?(Net::HTTPSuccess)
 
-        if response.is_a?(Net::HTTPSuccess)
-            response_json = JSON.parse(response.body)
+        payload = JSON.parse(response.body)
+        fc = payload.dig("choices", 0, "message", "function_call")
 
-            # Check if the assistant decided to call a function
-            function_call = response_json.dig("choices", 0, "message", "function_call")
+        if fc
+        name = fc["name"]
+        args = JSON.parse(fc["arguments"]) rescue {}
+        result = callbacks[name.to_sym].call(args)
 
-            unless function_call
-                # add new response from AI to the history of messages
-                assistant_reply = response_json.dig("choices", 0, "message", "content")
-                self.messages << { "role" => "assistant", "content" => assistant_reply }
-                # return the resonse from AI
-                return assistant_reply
-            else
-                function_call_name = function_call["name"]
-                function_call_args = JSON.parse(function_call["arguments"]) rescue {}
-                
-                # Handle the function call
-                result = self.callbacks[function_call_name.to_sym].call(function_call_args);
+        # feed the function result back
+        follow_up = {
+            "model"    => model,
+            "messages" => messages + [
+            { "role" => "function", "name" => name, "content" => JSON.dump(result) }
+            ]
+        }
 
-                # Now we send the function result back to the assistant as another message:
-                follow_up_uri = URI("https://api.openai.com/v1/chat/completions")
-                follow_up_messages = messages.dup
-                follow_up_messages << {
-                    "role" => "function",
-                    "name" => function_call_name,
-                    "content" => JSON.dump(result)
-                }
+        fu_req = Net::HTTP::Post.new(uri.path, req.to_hash)
+        fu_req.body = JSON.dump(follow_up)
+        fu_res = http.request(fu_req)
+        raise "Error after function call: #{fu_res.body}" unless fu_res.is_a?(Net::HTTPSuccess)
 
-                follow_up_request_body = {
-                    "model" => self.model,
-                    "messages" => follow_up_messages
-                }
-
-                follow_up_http = Net::HTTP.new(follow_up_uri.host, follow_up_uri.port)
-                follow_up_http.use_ssl = true
-
-                follow_up_request = Net::HTTP::Post.new(follow_up_uri.path, {
-                    "Content-Type" => "application/json",
-                    "Authorization" => "Bearer #{self.api_key}",
-                    "OpenAI-Beta" => "assistants=#{version}"
-                })
-                follow_up_request.body = JSON.dump(follow_up_request_body)
-                
-                follow_up_response = follow_up_http.request(follow_up_request)
-                if follow_up_response.is_a?(Net::HTTPSuccess)
-                    follow_up_response_json = JSON.parse(follow_up_response.body)
-                    final_reply = follow_up_response_json.dig("choices", 0, "message", "content")
-                    # add new response from AI to the history of messages
-                    self.messages << { "role" => "assistant", "content" => final_reply }
-                    # return the response form the AI.
-                    return final_reply
-                else
-                    raise "Error after function call: #{follow_up_response.code} - #{follow_up_response.message} - #{follow_up_response.body}"
-                end
-            end
+        final = JSON.parse(fu_res.body).dig("choices",0,"message","content")
+        messages << { "role" => "assistant", "content" => final }
+        final
         else
-            raise "Error: #{response.code} - #{response.message} - #{response.body}"
+        reply = payload.dig("choices",0,"message","content")
+        messages << { "role" => "assistant", "content" => reply }
+        reply
         end
-    end # def ask
+    end # ask
+
 
     # manage copilot from terminal
     def console
