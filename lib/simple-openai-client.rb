@@ -74,7 +74,6 @@ class OpenAIClient
         }
 
         if functions.any?
-binding.pry
             request_body["functions"] = functions
             
             # force GPT to call a specific function…
