@@ -69,33 +69,33 @@ class OpenAIClient
 
         # base request
         request_body = {
-        "model"    => self.model,
-        "messages" => self.messages
+            "model"    => self.model,
+            "messages" => self.messages
         }
 
         if functions.any?
-        request_body["functions"] = functions
+            request_body["functions"] = functions
 
-        # if you want GPT to call a specific function…
-        if function_to_call
-            # if you also passed a hash of arguments, serialize them
-            if function_args
-            request_body["function_call"] = {
-                "name"      => function_to_call,
-                "arguments" => JSON.dump(function_args)
-            }
-            else
-            request_body["function_call"] = { "name" => function_to_call }
+            # if you want GPT to call a specific function…
+            if function_to_call
+                # if you also passed a hash of arguments, serialize them
+                if function_args
+                request_body["function_call"] = {
+                    "name"      => function_to_call,
+                    "arguments" => JSON.dump(function_args)
+                }
+                else
+                request_body["function_call"] = { "name" => function_to_call }
+                end
             end
-        end
         end
 
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
         req = Net::HTTP::Post.new(uri.path, {
-        "Content-Type"  => "application/json",
-        "Authorization" => "Bearer #{api_key}",
-        "OpenAI-Beta"   => "assistants=#{version}"
+            "Content-Type"  => "application/json",
+            "Authorization" => "Bearer #{api_key}",
+            "OpenAI-Beta"   => "assistants=#{version}"
         })
         req.body = JSON.dump(request_body)
 
@@ -106,30 +106,35 @@ class OpenAIClient
         fc = payload.dig("choices", 0, "message", "function_call")
 
         if fc
-        name = fc["name"]
-        args = JSON.parse(fc["arguments"]) rescue {}
-        result = callbacks[name.to_sym].call(args)
+            name = fc["name"]
+            args = JSON.parse(fc["arguments"]) rescue {}
+            result = callbacks[name.to_sym].call(args)
 
-        # feed the function result back
-        follow_up = {
-            "model"    => model,
-            "messages" => messages + [
-            { "role" => "function", "name" => name, "content" => JSON.dump(result) }
-            ]
-        }
+            # feed the function result back
+            follow_up = {
+                "model"    => model,
+                "messages" => messages + [
+                    { "role" => "function", "name" => name, "content" => JSON.dump(result) }
+                ]
+            }
 
-        fu_req = Net::HTTP::Post.new(uri.path, req.to_hash)
-        fu_req.body = JSON.dump(follow_up)
-        fu_res = http.request(fu_req)
-        raise "Error after function call: #{fu_res.body}" unless fu_res.is_a?(Net::HTTPSuccess)
+            # Use the same headers hash as above – not req.to_hash
+            fu_req = Net::HTTP::Post.new(uri.path, {
+                "Content-Type"  => "application/json",
+                "Authorization" => "Bearer #{api_key}",
+                "OpenAI-Beta"   => "assistants=#{version}"
+            })
+            fu_req.body = JSON.dump(follow_up)
+            fu_res = http.request(fu_req)
+            raise "Error after function call: #{fu_res.body}" unless fu_res.is_a?(Net::HTTPSuccess)
 
-        final = JSON.parse(fu_res.body).dig("choices",0,"message","content")
-        messages << { "role" => "assistant", "content" => final }
-        final
+            final = JSON.parse(fu_res.body).dig("choices",0,"message","content")
+            messages << { "role" => "assistant", "content" => final }
+            final
         else
-        reply = payload.dig("choices",0,"message","content")
-        messages << { "role" => "assistant", "content" => reply }
-        reply
+            reply = payload.dig("choices",0,"message","content")
+            messages << { "role" => "assistant", "content" => reply }
+            reply
         end
     end # ask
 
