@@ -74,18 +74,19 @@ class OpenAIClient
         }
 
         if functions.any?
+binding.pry
             request_body["functions"] = functions
-
-            # if you want GPT to call a specific function…
+            
+            # force GPT to call a specific function…
             if function_to_call
-                # if you also passed a hash of arguments, serialize them
                 if function_args
-                request_body["function_call"] = {
-                    "name"      => function_to_call,
-                    "arguments" => JSON.dump(function_args)
-                }
+                    # pass args as a JSON object, not a string
+                    request_body["function_call"] = {
+                        "name"      => function_to_call,
+                        "arguments" => function_args.to_json
+                    }
                 else
-                request_body["function_call"] = { "name" => function_to_call }
+                    request_body["function_call"] = { "name" => function_to_call }
                 end
             end
         end

@@ -296,7 +296,7 @@ puts '---'
 tags = $ai.ask(
   "List my first page of tags.",
   function_to_call: "list_tags",
-  function_args:   { "page" => 1, "limit" => 3 }
+  function_args:   { page: 1, limit: 3 }
 )
 puts "Tags:"
 puts tags
