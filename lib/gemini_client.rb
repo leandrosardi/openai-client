@@ -6,9 +6,8 @@ require 'net/http'
 require 'uri'
 require 'json'
 require 'colorize'
-require_relative './gemini_client'
 
-class OpenAIClient
+class GeminiClient
     attr_accessor :api_key, :model, :messages, :functions, :callbacks, :version
   
     def initialize(api_key:, model:, messages: [], functions: [], callbacks: [], version: 'v2')
@@ -22,7 +21,7 @@ class OpenAIClient
   
     # Return an array with the available models
     def models
-      uri = URI("https://api.openai.com/v1/models")
+      uri = URI("https://api.gemini.google.com/v1/models") # Changed API endpoint
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
   
@@ -62,7 +61,7 @@ class OpenAIClient
     #
     # @return [String] the assistant’s reply (or function result)
     def ask(s, context: [], function_to_call: nil, function_args: nil)
-        uri = URI("https://api.openai.com/v1/chat/completions")
+        uri = URI("https://api.gemini.google.com/v1/chat/completions") # Changed API endpoint
 
         # build message history
         self.messages += context
@@ -96,12 +95,17 @@ class OpenAIClient
         req = Net::HTTP::Post.new(uri.path, {
             "Content-Type"  => "application/json",
             "Authorization" => "Bearer #{api_key}",
-            "OpenAI-Beta"   => "assistants=#{version}"
+            #"OpenAI-Beta"   => "assistants=#{version}" # Removed OpenAI-Beta header
         })
         req.body = JSON.dump(request_body)
 
         response = http.request(req)
-        raise "Error: #{response.code} #{response.message} #{response.body}" unless response.is_a?(Net::HTTPSuccess)
+        begin
+          raise "Error: #{response.code} #{response.message} #{response.body}" unless response.is_a?(Net::HTTPSuccess)
+        rescue => e
+          puts "Error communicating with Gemini API: #{e.message}".red
+          return "Error communicating with Gemini API. Check your API key and network connection."
+        end
 
         payload = JSON.parse(response.body)
         fc = payload.dig("choices", 0, "message", "function_call")
@@ -123,11 +127,16 @@ class OpenAIClient
             fu_req = Net::HTTP::Post.new(uri.path, {
                 "Content-Type"  => "application/json",
                 "Authorization" => "Bearer #{api_key}",
-                "OpenAI-Beta"   => "assistants=#{version}"
+                #"OpenAI-Beta"   => "assistants=#{version}" # Removed OpenAI-Beta header
             })
             fu_req.body = JSON.dump(follow_up)
             fu_res = http.request(fu_req)
-            raise "Error after function call: #{fu_res.body}" unless fu_res.is_a?(Net::HTTPSuccess)
+            begin
+              raise "Error after function call: #{fu_res.body}" unless fu_res.is_a?(Net::HTTPSuccess)
+            rescue => e
+              puts "Error communicating with Gemini API after function call: #{e.message}".red
+              return "Error communicating with Gemini API after function call. Check your API key and network connection."
+            end
 
             final = JSON.parse(fu_res.body).dig("choices",0,"message","content")
             messages << { "role" => "assistant", "content" => final }
@@ -142,18 +151,18 @@ class OpenAIClient
 
     # manage copilot from terminal
     def console
-        puts "Mass-Copilot Console".blue
+        puts "Gemini-Copilot Console".blue
         puts "Type 'exit' to quit.".blue
         while true
             print "You: ".green
             prompt = gets.chomp
             break if prompt.downcase.strip == 'exit'
             begin
-                puts "Mass-Copilot: #{ask(prompt)}".blue
+                puts "Gemini-Copilot: #{ask(prompt)}".blue
             rescue => e
                 puts "Error: #{e.to_console}".red
             end
         end
     end # def console
 
-end # class OpenAIClient
+end # class GeminiClient

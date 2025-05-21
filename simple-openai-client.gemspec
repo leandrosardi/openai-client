@@ -8,6 +8,7 @@ Gem::Specification.new do |s|
     s.email       = 'leandro@massprospecting.com'
     s.files       = [
       'lib/simple-openai-client.rb',
+      'lib/gemini_client.rb',
       'simple-openai-client.gemspec'
     ]
     s.homepage    = 'https://github.com/leandrosardi/simple-openai-client'
